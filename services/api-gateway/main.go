@@ -29,10 +29,13 @@ func main() {
 		Handler: mux,
 	}
 
+	certFile := "ride-sharing/services/api-gateway/ca.crt" // TODO: set your cert path
+	keyFile := "ride-sharing/services/api-gateway/ca.key"
+
 	serverErrors := make(chan error, 1)
 	go func() {
 		log.Printf("server listening on %s", httpAddr)
-		serverErrors <- server.ListenAndServe()
+		serverErrors <- server.ListenAndServeTLS(certFile, keyFile)
 	}()
 	shutdown := make(chan os.Signal, 1)
 	signal.Notify(shutdown, os.Interrupt, syscall.SIGTERM)
